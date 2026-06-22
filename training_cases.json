@@ -1,0 +1,20 @@
+[
+  {
+    "id": "case-ai-pressure-4-20ma",
+    "customerText": "西门子PLC的AI板卡接收来自现场的4-20mA信号，检测现场压力变化，中间加安全栅，一入一出",
+    "correctIoType": "AI",
+    "correctChannelType": "oneInOneOut",
+    "correctModel": "PHD-11TD-21",
+    "reason": "PLC AI 是接收端，现场压力变送器是信号源，信号方向为现场变送器 → 安全栅 → PLC AI，因此属于模拟量输入安全栅，不是 AO 输出安全栅。",
+    "approved": true
+  },
+  {
+    "id": "case-ao-valve-positioner",
+    "customerText": "PLC AO输出4-20mA控制气动调节阀定位器，中间加安全栅",
+    "correctIoType": "AO",
+    "correctChannelType": "oneInOneOut",
+    "correctModel": "PHC-11CD-11",
+    "reason": "PLC/DCS AO 输出控制阀门或定位器，属于模拟量输出控制端。",
+    "approved": true
+  }
+]

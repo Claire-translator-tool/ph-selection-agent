@@ -1,0 +1,43 @@
+{
+  "globalDocs": [
+    {
+      "title": "北京平和安全栅选型总样册",
+      "type": "产品样册",
+      "status": "待上传",
+      "href": "assets/docs/README.md",
+      "note": "请把正式 PDF 放到 assets/docs/ 目录后更新 href。"
+    },
+    {
+      "title": "防爆证书/本安参数资料包",
+      "type": "证书",
+      "status": "待上传",
+      "href": "assets/docs/README.md",
+      "note": "涉及防爆/本安时必须以证书参数为准。"
+    }
+  ],
+  "byModel": {
+    "PHD-11TD-21": [
+      {
+        "title": "PHD-11TD-21 产品样册",
+        "type": "产品样册",
+        "status": "待替换正式 PDF",
+        "href": "assets/docs/README.md",
+        "note": "当前页面参数为选型演示用，正式引用请上传样册 PDF。"
+      },
+      {
+        "title": "PHD-11TD-21 防爆证书",
+        "type": "防爆证书",
+        "status": "待上传",
+        "href": "assets/docs/README.md",
+        "note": "客户要求防爆/本安时必须核对。"
+      },
+      {
+        "title": "PHD-11TD-21 SIL/安全手册",
+        "type": "功能安全",
+        "status": "待上传",
+        "href": "assets/docs/README.md",
+        "note": "客户要求 SIL/SLL 时需要补正式证书或 FMEDA/安全手册。"
+      }
+    ]
+  }
+}

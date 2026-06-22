@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>北京平和工业品智能选型</title>
+  <meta name="description" content="北京平和安全栅、隔离器、电涌保护器、安全继电器工业品智能选型工具。">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <div class="logo">PH</div>
+      <div>
+        <p>北京平和</p>
+        <h1>工业品智能选型</h1>
+      </div>
+    </div>
+    <div class="header-actions">
+      <span class="status-pill">GitHub Pages 静态版 V5</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel input-panel">
+      <div class="section-title">
+        <span>客户需求输进来</span>
+        <small>Ctrl / ⌘ + Enter 快速选型</small>
+      </div>
+      <textarea id="need-input" placeholder="例如：西门子PLC的AI板卡接收来自现场的4-20mA信号，检测现场压力变化，中间加安全栅，一入一出"></textarea>
+      <div class="button-row">
+        <button class="btn primary" id="run-btn">开始选型</button>
+        <button class="btn ghost" id="clear-btn">清空</button>
+      </div>
+      <div class="quick-examples">
+        <button data-action="example" data-text="西门子PLC的AI板卡接收来自现场的4-20mA信号，检测现场压力变化，中间加安全栅，一入一出">AI 检测压力</button>
+        <button data-action="example" data-text="PLC AO输出4-20mA控制气动调节阀定位器，中间加安全栅，一入一出">AO 控制阀门</button>
+        <button data-action="example" data-text="一路现场4-20mA压力变送器信号要同时给PLC和记录仪，中间加安全栅，一入两出">一入两出</button>
+        <button data-action="example" data-text="两个限位开关信号进入DCS DI，需要本安隔离，两入两出">两入两出</button>
+        <button data-action="example" data-text="现场PT100温度信号进入PLC，需要防爆安全栅">PT100 温度</button>
+        <button data-action="example" data-text="客户预算低，现场4-20mA变送器信号进PLC AI，要便宜一点的安全栅">经济候选</button>
+      </div>
+      <div class="strict-card">
+        <strong>严谨规则</strong>
+        <p>先判断信号流向，再判断 AI/AO/DI/DO，最后匹配型号。没有资料来源或置信度不足时，只给候选和补问，不直接下最终结论。</p>
+      </div>
+    </section>
+
+    <section class="result-column">
+      <div id="result"></div>
+      <div id="docs-slot"></div>
+    </section>
+
+    <aside class="side-column">
+      <section class="panel guide-panel">
+        <div class="section-title"><span>选型逻辑</span></div>
+        <ol>
+          <li>现场设备 → PLC/DCS：AI 或 DI。</li>
+          <li>PLC/DCS → 现场设备：AO 或 DO。</li>
+          <li>一入一出 = 单通道。</li>
+          <li>一入两出 = 一分二。</li>
+          <li>两入两出 = 双通道。</li>
+          <li>T 系列优先；客户强调便宜时补 C 系列候选。</li>
+        </ol>
+      </section>
+
+      <section class="panel library-panel">
+        <div class="section-title"><span>产品库</span><small>点击查看资料</small></div>
+        <div id="library-list" class="library-list"></div>
+      </section>
+
+      <section class="panel correction-panel">
+        <div class="section-title"><span>选错了？教它</span><small>人工审核后再进训练库</small></div>
+        <label>正确 IO 类型</label>
+        <select id="correct-io">
+          <option value="AI">AI/检测端</option>
+          <option value="AO">AO/控制端</option>
+          <option value="DI">DI/状态检测</option>
+          <option value="DO">DO/控制端</option>
+          <option value="RTD">RTD/热电阻</option>
+          <option value="TC">TC/热电偶</option>
+        </select>
+        <label>正确通道</label>
+        <select id="correct-channel">
+          <option value="oneInOneOut">一入一出（单通道）</option>
+          <option value="oneInTwoOut">一入两出（一分二）</option>
+          <option value="twoInTwoOut">两入两出（双通道）</option>
+        </select>
+        <label>正确型号</label>
+        <input id="correct-model" placeholder="例如 PHD-11TD-21">
+        <label>为什么这么选</label>
+        <textarea id="correct-reason" class="small-textarea" placeholder="例如：PLC AI 是接收端，现场压力变送器是信号源，所以是 AI 输入类。"></textarea>
+        <div class="button-row">
+          <button class="btn" id="export-correction">生成训练 JSON</button>
+          <button class="btn ghost" id="copy-correction">复制</button>
+        </div>
+        <pre id="correction-output"></pre>
+        <p id="copy-tip" class="muted"></p>
+      </section>
+    </aside>
+  </main>
+
+  <div id="modal" class="modal"></div>
+
+  <footer class="site-footer">
+    <p>工业品选型提示：页面推荐只做初步选型，防爆、本安、SIL、回路参数必须以正式样册、证书和安全手册为准。</p>
+  </footer>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
