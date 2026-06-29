@@ -35,6 +35,7 @@ async function initData() {
   state.rules = rules;
   state.trainingCases = trainingCases;
   state.documents = documents;
+  renderRules();
   renderProductLibrary();
 }
 
@@ -44,55 +45,82 @@ function $(selector) {
 
 function escapeHtml(value = '') {
   return String(value)
-    .replace(/&/g, '&')
-    .replace(/</g, '<')
-    .replace(/>/g, '>')
-    .replace(/"/g, '"')
-    .replace(/'/g, "'");
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function resultSlot() {
+  return $('#result-panel') || $('#result');
+}
+
+function docsSlot() {
+  return $('#docs-slot');
+}
+
+function renderRules() {
+  const el = $('#rules-list');
+  if (!el) return;
+  const principles = Array.isArray(state.rules.principles) ? state.rules.principles : [];
+  el.innerHTML = principles.length
+    ? principles.map((item) => `<div class="list-item"><strong>${escapeHtml(item)}</strong></div>`).join('')
+    : '<p class="muted">暂无规则。</p>';
 }
 
 function runSelection() {
-  const input = $('#need-input').value;
+  const input = $('#need-input')?.value || '';
   const intent = parseIntent(input, state.rules);
   const matches = recommendProducts(state.products, intent, state.rules, state.trainingCases);
   state.lastIntent = intent;
   state.lastMatches = matches;
-  $('#result').innerHTML = renderResult(intent, matches);
 
+  const target = resultSlot();
+  if (target) target.innerHTML = renderResult(intent, matches);
+
+  const docsTarget = docsSlot();
+  if (!docsTarget) return;
   const firstModel = matches[0]?.product?.model || '';
-  if (firstModel) {
-    $('#docs-slot').innerHTML = renderDocsPanel(state.documents, firstModel);
-  } else {
-    $('#docs-slot').innerHTML = '';
-  }
+  docsTarget.innerHTML = firstModel ? renderDocsPanel(state.documents, firstModel) : '';
 }
 
 function clearSelection() {
-  $('#need-input').value = '';
+  const input = $('#need-input');
+  if (input) input.value = '';
   state.lastIntent = null;
   state.lastMatches = [];
-  $('#result').innerHTML = '请输入客户需求后开始选型。';
-  $('#docs-slot').innerHTML = '';
+  const target = resultSlot();
+  if (target) {
+    target.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><p>等待输入需求后开始选型...</p></div>';
+  }
+  const docsTarget = docsSlot();
+  if (docsTarget) docsTarget.innerHTML = '';
 }
 
 function fillExample(text) {
-  $('#need-input').value = text;
+  const input = $('#need-input');
+  if (!input) return;
+  input.value = text;
   runSelection();
 }
 
 function openModal(model) {
+  const modal = $('#modal');
+  if (!modal) return;
   const product = state.products.find((item) => item.model === model);
   if (!product) return;
   const docs = getDocsForModel(state.documents, model);
-  const modal = $('#modal');
   modal.innerHTML = renderProductModal(product, docs);
   modal.classList.add('show');
   document.body.classList.add('modal-open');
 }
 
 function closeModal() {
-  $('#modal').classList.remove('show');
-  $('#modal').innerHTML = '';
+  const modal = $('#modal');
+  if (!modal) return;
+  modal.classList.remove('show');
+  modal.innerHTML = '';
   document.body.classList.remove('modal-open');
 }
 
@@ -102,19 +130,20 @@ function scrollDocs() {
 }
 
 function renderProductLibrary() {
-  const el = $('#library-list');
+  const el = $('#products-list') || $('#library-list');
   if (!el) return;
-  el.innerHTML = state.products.map((product) => `
+  const items = state.products.slice(0, 12);
+  el.innerHTML = items.map((product) => `
     <button class="library-item" data-action="open-modal" data-model="${escapeHtml(product.model)}">
       <span>${escapeHtml(product.model)}</span>
-      <small>${escapeHtml(product.ioLabel)} · ${escapeHtml(product.channelLabel)}</small>
+      <small>${escapeHtml(product.ioLabel || product.name || '')} · ${escapeHtml(product.channelLabel || '')}</small>
     </button>
   `).join('');
 }
 
 function bindEvents() {
-  $('#run-btn').addEventListener('click', runSelection);
-  $('#clear-btn').addEventListener('click', clearSelection);
+  $('#run-btn')?.addEventListener('click', runSelection);
+  $('#clear-btn')?.addEventListener('click', clearSelection);
 
   document.addEventListener('click', (event) => {
     const target = event.target.closest('[data-action]');
@@ -128,11 +157,11 @@ function bindEvents() {
     if (action === 'example') fillExample(target.dataset.text || '');
   });
 
-  $('#modal').addEventListener('click', (event) => {
+  $('#modal')?.addEventListener('click', (event) => {
     if (event.target.id === 'modal') closeModal();
   });
 
-  $('#need-input').addEventListener('keydown', (event) => {
+  $('#need-input')?.addEventListener('keydown', (event) => {
     if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') runSelection();
   });
 }
