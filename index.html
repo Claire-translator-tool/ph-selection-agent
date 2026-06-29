@@ -3,68 +3,73 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>北京平和工业品智能选型</title>
-  <meta name="description" content="北京平和安全栅、隔离器、电涌保护器、安全继电器工业品智能选型工具。">
-  <link rel="stylesheet" href="./style.css">
+  <title>北京平和选型智能体</title>
+  <meta name="description" content="输入客户需求，直接推荐北京平和安全栅、浪涌保护器、安全继电器型号。">
+  <link rel="stylesheet" href="./style.css?v=20260629-agent">
 </head>
 <body>
-  <header class="site-header">
-    <div class="brand">
-      <div class="logo">PH</div>
-      <div>
-        <p>北京平和</p>
-        <h1>工业品智能选型</h1>
-      </div>
-    </div>
-    <div class="header-actions">
-      <span class="status-pill">GitHub Pages 静态版 V6</span>
-    </div>
+  <header class="topbar">
+    <div class="brand"><div class="logo">PH</div><div><span>北京平和</span><strong>选型智能体</strong></div></div>
+    <span class="status">可训练 · 可分享</span>
   </header>
 
   <main class="layout">
-    <section class="panel input-panel">
-      <div class="section-title">
-        <span>客户需求输进来</span>
-        <small>Ctrl / ⌘ + Enter 快速选型</small>
-      </div>
-      <textarea id="need-input" placeholder="例如：西门子PLC的AI板卡接收来自现场的4-20mA信号，检测现场压力变化，中间加安全栅，一入一出"></textarea>
+    <section class="panel ask-panel">
+      <div class="section-title"><span>客户需求输进来</span><small>一句话即可</small></div>
+      <textarea id="need-input" placeholder="例如：PLC的AQ输出4-20mA信号给气动薄膜调节阀，中间加安全栅，一入一出"></textarea>
       <div class="button-row">
         <button class="btn primary" id="run-btn">开始选型</button>
         <button class="btn ghost" id="clear-btn">清空</button>
       </div>
       <div class="quick-examples">
-        <button data-action="example" data-text="西门子PLC的AI板卡接收来自现场的4-20mA信号，检测现场压力变化，中间加安全栅，一入一出">AI 检测压力</button>
-        <button data-action="example" data-text="现场变送器4-20mA信号回PLC，中间加安全栅，一入一出">变送器回 PLC</button>
-        <button data-action="example" data-text="PLC的AO输出4-20mA信号给现场的气动薄膜调节阀，中间加安全栅，一入一出">AO 到调节阀</button>
-        <button data-action="example" data-text="客户要便宜一点的4-20mA安全栅，C系列">C 系列安全栅</button>
-        <button data-action="example" data-text="RS485信号防雷，用浪涌保护器">RS485 浪涌</button>
+        <button data-example="PLC的AQ输出4-20mA信号给气动薄膜调节阀，中间加安全栅，一入一出">AQ 到调节阀</button>
+        <button data-example="现场压力变送器4-20mA回PLC，中间加安全栅，一入一出">变送器回 PLC</button>
+        <button data-example="客户要便宜一点的4-20mA安全栅，C系列">便宜 4-20mA</button>
+        <button data-example="DI开关量安全栅，带防爆证">DI 开关量</button>
+        <button data-example="RS485信号用浪涌保护器">RS485 浪涌</button>
+      </div>
+      <div class="channel-row">
+        <button data-channel="一入一出">一入一出</button>
+        <button data-channel="一入两出">一入两出</button>
+        <button data-channel="两入一出">两入一出</button>
+        <button data-channel="两入两出">两入两出</button>
       </div>
     </section>
 
     <section class="panel result-panel" id="result-panel">
-      <div class="empty-state">
-        <div class="icon">🔍</div>
-        <p>等待输入需求后开始选型...</p>
-      </div>
+      <div class="empty"><strong>等你输入客户需求</strong><p>我会按 T 系列优先、便宜选 C 系列的规则推荐型号。</p></div>
     </section>
 
-    <aside class="side-panel">
-      <section class="panel rules-panel">
-        <div class="section-title">选型逻辑</div>
-        <div id="rules-list" class="list-container">加载中...</div>
-      </section>
-      
-      <section class="panel history-panel">
-        <div class="section-title">常用产品</div>
-        <div id="products-list" class="list-container">加载中...</div>
-      </section>
+    <section class="panel train-panel">
+      <div class="section-title"><span>训练校正</span><small>选错就教它</small></div>
+      <label>客户原话<textarea id="train-text"></textarea></label>
+      <label>正确型号<select id="train-model"></select></label>
+      <label>为什么这么选<textarea id="train-reason" placeholder="例如：PLC AQ/AO 输出到调节阀，应该选 PHC，不选 PHD。"></textarea></label>
+      <div class="button-row">
+        <button class="btn primary" id="save-train">保存训练</button>
+        <button class="btn ghost" id="fill-train">用当前问题填入</button>
+      </div>
+      <details>
+        <summary>导出 / 导入训练包</summary>
+        <textarea id="memory-box" placeholder="训练包内容"></textarea>
+        <div class="button-row">
+          <button class="btn ghost" id="export-memory">导出训练包</button>
+          <button class="btn ghost" id="import-memory">导入训练包</button>
+        </div>
+      </details>
+    </section>
+
+    <aside class="panel memory-panel">
+      <div class="section-title"><span>记忆</span><small>本机浏览器保存</small></div>
+      <div id="stats" class="stats"></div>
+      <h3>已学规则</h3>
+      <div id="rules-list" class="list"></div>
+      <h3>训练案例</h3>
+      <div id="cases-list" class="list"></div>
     </aside>
   </main>
 
-  <footer class="site-footer">
-    <p>&copy; 2026 北京平和工业控制系统工程有限公司</p>
-  </footer>
-
-  <script type="module" src="./main.js?v=20260629-fix"></script>
+  <div id="toast" class="toast"></div>
+  <script src="./main.js?v=20260629-agent"></script>
 </body>
 </html>
